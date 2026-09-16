@@ -110,7 +110,8 @@ public class Main {
 				akunAktif.cetakMutasi();
 				break;
 			
-		
+			case 7:
+				
 					
 				
 			case 0: 

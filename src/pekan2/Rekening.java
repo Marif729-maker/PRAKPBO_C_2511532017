@@ -66,6 +66,7 @@ public void cekInformasi() {
 	System.out.println("Nama Pemilik: "+ namaPemilik);
 	System.out.println("Saldo Akhir: Rp"+ saldo);
 	System.out.println("-------------------");
+	System.out.println("");
 }
 
 
