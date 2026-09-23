@@ -18,7 +18,6 @@ public class Main {
 			System.out.println("4. Cek Informasi Rekening");
 			System.out.println("5. ganti akun aktif");
 			System.out.println("6. cetak mutasi (riwayat)");
-			System.out.println("7. transaksi terbaru (riwayat)");
 			System.out.println("0. Keluar");
 			System.out.println("Pilih Menu: ");
 			  
@@ -108,10 +107,7 @@ public class Main {
 				
 			case 6:
 				akunAktif.cetakMutasi();
-				break;
-			
-			case 7:
-				
+				break;				
 					
 				
 			case 0: 
