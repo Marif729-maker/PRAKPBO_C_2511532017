@@ -113,7 +113,13 @@ public static boolean isPinLemah(String pin) {
 
     return semuaSama || berurutanNaik || berurutanTurun;
 }
-
+public boolean setPin(String pinBaru) {
+    if (pinBaru.length() == 6 && pinBaru.matches("\\d+") && !isPinLemah(pinBaru)) {
+        this.pin = pinBaru;
+        return true;
+    }
+    return false;
+}
 
 
 }

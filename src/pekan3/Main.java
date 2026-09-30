@@ -45,7 +45,8 @@ public class Main {
 			        } 
 		
 			        else if (Rekening.isPinLemah(pin)) {
-			            System.out.println("Gagal: PIN terlalu mudah! Tidak boleh menggunakan angka berulang (misal: 111111) atau berurutan (misal: 123456 / 654321).\n");
+			            System.out.println("Gagal: PIN terlalu mudah! Tidak boleh menggunakan angka berulang (misal: 111111) "
+			            		+ "atau berurutan (misal: 123456 / 654321).\n");
 			        } 
 			     
 			        else {
@@ -145,15 +146,27 @@ public class Main {
 				akunAktif.cetakMutasi();
 				break;				
 			case 7:
-				System.out.println("masukkan pin awal:");
-				String pinawal = input.nextLine(); 
-				if(akunAktif.otentikasi(pinawal)) {
-					System.out.println("masukkan pin baru");
-					String pinbaru = input.nextLine();
-				}else {
-					System.out.println("pin salah");
-				}
-				break;			
+			    if (akunAktif == null) {
+			        System.out.println("Error: Anda belum membuka rekening!");
+			    } else {
+			        System.out.print("Masukkan PIN saat ini: ");
+			        String pinLama = input.nextLine(); 
+			        
+			        if (akunAktif.otentikasi(pinLama)) {
+			            System.out.print("Masukkan PIN baru (6 digit angka): ");
+			            String pinBaru = input.nextLine();
+			            
+			            if (akunAktif.setPin(pinBaru)) {
+			                System.out.println("PIN berhasil diubah!");
+			            } else {
+			                System.out.println("Gagal mengubah PIN: PIN baru harus 6 digit angka dan "
+			                		+ "tidak boleh terlalu mudah (berulang/berurutan).");
+			            }
+			        } else {
+			            System.out.println("Gagal: PIN lama salah!");
+			        }
+			    }
+			    break;	
 				
 			case 0: 
 				isRunning = false;
