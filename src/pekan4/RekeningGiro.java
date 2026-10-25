@@ -11,5 +11,7 @@ public class RekeningGiro extends Rekening {
 	public double getBatasOverdraft() {
 		return batasOverdraft;
 	}
+	
+	
 
 }

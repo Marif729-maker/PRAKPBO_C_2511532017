@@ -7,9 +7,10 @@ import java.util.ArrayList;
 public class Rekening {
    private String nomorRekening;
    private String namaPemilik;
-   private String pin; //data sensitif 
+   private String pin; 
    
-   //Gunakan protected agar Subclass bisa mengaksesnya langsung
+
+
    protected double saldo;
    protected ArrayList<Transaksi> riwayatTransaksi;
    
@@ -20,7 +21,7 @@ public Rekening(String nomor,String nama,double saldoAwal, String pinAwal) {
 	this.namaPemilik = nama;
 	this.saldo = saldoAwal;
 	
-	//Validasi PIN di dalam Constructor
+
 	if (pinAwal.length() == 6) {
 		this.pin = pinAwal;		
 	} else {
@@ -32,7 +33,7 @@ public Rekening(String nomor,String nama,double saldoAwal, String pinAwal) {
 	System.out.println("Rekening atas nama " + namaPemilik + " berhasil dibuat dengan saldo Rp" + saldo);
 }
 
-//3. Getter untuk atribut yang diizinkan dibaca publik
+
 public String getNoRekening() { return nomorRekening;}
 public String getNamaPemilik() { return namaPemilik;}
 

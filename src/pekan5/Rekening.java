@@ -1,0 +1,170 @@
+package pekan5;
+import java.text.NumberFormat;
+import java.util.Locale;
+
+import java.util.ArrayList;
+
+public class Rekening {
+   private String nomorRekening;
+   private String namaPemilik;
+   private String pin; 
+   
+
+
+   protected double saldo;
+   protected ArrayList<Transaksi> riwayatTransaksi;
+   
+   NumberFormat rupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+   
+public Rekening(String nomor,String nama,double saldoAwal, String pinAwal) {
+	this.nomorRekening = nomor;
+	this.namaPemilik = nama;
+	this.saldo = saldoAwal;
+	
+
+	if (pinAwal.length() == 6) {
+		this.pin = pinAwal;		
+	} else {
+		System.out.println("Peringatan: PIN harus 6 digit! Menggunakan PIN default 123456");
+		this.pin = "123456";
+	}
+	
+	this.riwayatTransaksi = new ArrayList<>();
+	System.out.println("Rekening atas nama " + namaPemilik + " berhasil dibuat dengan saldo Rp" + saldo);
+}
+
+
+public String getNoRekening() { return nomorRekening;}
+public String getNamaPemilik() { return namaPemilik;}
+
+//4.Method Otentikasi Internal (Validasi enkapsulasi)
+public boolean otentikasi(String inputPin) {
+	return this.pin.equals(inputPin);
+	}
+	public boolean gantiPin(String pinLama, String pinBaru) {
+	    if (!otentikasi(pinLama)) {
+	        return false;
+	    }
+	    if (pinLama.equals(pinBaru)) {
+	        return false;
+	    }
+	    pin = pinBaru;
+	    return true;
+	}
+	
+
+public void setorTunai(double nominal) {
+	if (nominal <= 500000) {
+		saldo += nominal;
+		//Merekam riwayat (Pembuatan objek Transaksi di dalam method)
+		String idTrx = "TRX-S-" + System.currentTimeMillis();
+		Transaksi trxBaru = new Transaksi(idTrx, "Kredit", nominal);
+		riwayatTransaksi.add(trxBaru);
+		
+		System.out.println("Setor tunai Rp" + nominal + " berhasil. Saldo saat ini: Rp" + saldo);
+	} else {
+		System.out.println("Gagal: Nominal setor tidak boleh lebih dari 500000!");
+		NumberFormat rupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+	}
+}
+
+public boolean tarikTunai(double nominal) {
+	if (nominal <= 0) {
+		System.out.println("Transaksi Gagal: Minimal Nominal penarikan 10000!");
+		return false;
+	} else if (nominal > saldo) {
+		System.out.println("Transaksi Gagal:Saldo tidak mencukupi. Saldo Anda: Rp" + nominal);
+		return false;
+	} else {
+		saldo -= nominal;
+		//Merekam riwayat (Pembuatan objek Transaksi di dalam method)
+				String idTrx = "TRX-T-" + System.currentTimeMillis();
+				Transaksi trxBaru = new Transaksi(idTrx, "Debit", nominal);
+				riwayatTransaksi.add(trxBaru);
+		System.out.println ("Tarik tunai Rp" + nominal + " berhasil. Saldo saat ini: Rp" + saldo);
+		return true;
+	}
+}
+
+public void cekInformasi() {
+	System.out.println("--- INFO REKENING ---");
+	System.out.println("No. Rekening : " + nomorRekening);
+	System.out.println("Nama Pemilik : " +namaPemilik);
+	NumberFormat rupiah = NumberFormat.getCurrencyInstance(new Locale("id", "ID"));
+	System.out.println("Saldo akhir : " + rupiah.format(saldo));
+	System.out.println("----------------");
+  }
+
+public void cetakMutasi() {
+	if (riwayatTransaksi.isEmpty()) {
+		System.out.println("Belum ada transaksi pada rekening ini");
+	} else {
+		for (Transaksi transaksi : riwayatTransaksi) {
+			transaksi.cetakDetail();
+		}
+	}
+}
+public void transaksiTerbaru() {
+	if (riwayatTransaksi.isEmpty()) {
+		System.out.println("Belum ada transaksi pada rekening ini");
+	} else {
+		System.out.println("3 Transaksi Terbaru");
+		int mulai = Math.max(0, riwayatTransaksi.size() - 3);
+		for (int i = riwayatTransaksi.size() - 1; i >= mulai; i-- ) {
+			riwayatTransaksi.get(i).cetakDetail();
+		}
+	}
+		
+	}
+
+public static boolean isPinLemah(String pin) {
+    boolean semuaSama = true;
+    boolean berurutanNaik = true;
+    boolean berurutanTurun = true;
+
+    for (int i = 0; i < pin.length() - 1; i++) {
+        int digitSekarang = Character.getNumericValue(pin.charAt(i));
+        int digitBerikutnya = Character.getNumericValue(pin.charAt(i + 1));
+
+        
+        if (digitSekarang != digitBerikutnya) {
+            semuaSama = false;
+        }
+
+        
+        if (digitBerikutnya != digitSekarang + 1) {
+            berurutanNaik = false;
+        }
+
+        
+        if (digitBerikutnya != digitSekarang - 1) {
+            berurutanTurun = false;
+        }
+    }
+
+
+    return semuaSama || berurutanNaik || berurutanTurun;
+}
+public boolean setPin(String pinBaru) {
+    if (pinBaru.length() == 6 && pinBaru.matches("\\d+") && !isPinLemah(pinBaru)) {
+        this.pin = pinBaru;
+        return true;
+    }
+    return false;
+}
+
+public void transfer(Rekening tujuan, double nominal, String pinInput) {
+	if(!otentikasi(pinInput)) {
+		System.out.println("Transfer Gagal: PIN salah");
+		return;
+	}
+	
+	boolean berhasil = this.tarikTunai(nominal);
+	
+	if(berhasil) {
+		tujuan.setorTunai(nominal);
+		System.out.println("Transfer Rp"+ nominal + " ke " + tujuan.getNamaPemilik() + " berhasil");
+	}
+}
+
+}
