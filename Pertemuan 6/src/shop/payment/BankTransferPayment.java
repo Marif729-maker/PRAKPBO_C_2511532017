@@ -1,9 +1,12 @@
 package shop.payment;
 
 public class BankTransferPayment implements PaymentMethod {
-    private String bankName;
+    private final String bankName;
 
     public BankTransferPayment(String bankName){
+        if (bankName == null || bankName.isBlank()) {
+            throw new IllegalArgumentException("Bank name must not be blank");
+        }
         this.bankName = bankName;
     }
 

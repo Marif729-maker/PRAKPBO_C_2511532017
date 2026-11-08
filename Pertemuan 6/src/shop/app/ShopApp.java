@@ -1,20 +1,19 @@
 package shop.app;
 
 import java.util.List;
-
 import shop.model.Address;
 import shop.model.DigitalProduct;
 import shop.model.Order;
 import shop.model.PhysicalProduct;
 import shop.model.Product;
+import shop.payment.BankTransferPayment;
+import shop.payment.CreditCardPayment;
+import shop.payment.EWalletPayment;
+import shop.payment.PaymentMethod;
 import shop.service.CheckoutService;
 import shop.shipping.ExpressShipping;
 import shop.shipping.RegularShipping;
 import shop.shipping.ShippingService;
-import shop.payment.EWalletPayment;
-import shop.payment.PaymentMethod;
-import shop.payment.BankTransferPayment;
-import shop.payment.CreditCardPayment;
 
 
 
@@ -42,14 +41,14 @@ public class ShopApp {
         System.out.println("Total Reguler: Rp " + checkout.total(cart, regular));
         System.out.println("Total Express: Rp " + checkout.total(cart, express));
 
-        EWalletPayment wallet = new EWalletPayment("DompetKu", 300_000);
-        PaymentMethod transfer = new BankTransferPayment("Bank Nagari");
+        EWalletPayment wallet = new EWalletPayment("Dana", 300_000);
+        PaymentMethod transfer = new BankTransferPayment("Bank Negara Indonesia");
 
         System.out.println("\n== Pembayaran ==");
         System.out.println(wallet.getName() + " berhasil? " + checkout.checkout(cart, regular, wallet));
         System.out.println("Sisa saldo: Rp" + wallet.getBalance());
         System.out.println(transfer.getName() + " berhasil? " + checkout.checkout(cart, express, transfer));
-        CreditCardPayment card = new CreditCardPayment("Siti Rahma", 1_000_000);
+        CreditCardPayment card = new CreditCardPayment("Muhammad Arif", 1_000_000);
         System.out.println(card.getName() + " berhasil? " + checkout.checkout(cart, express, card));
         System.out.println("Cicilan 3 bulan: Rp" + card.monthlyInstallment(checkout.total(cart, express), 3));
 
@@ -57,13 +56,14 @@ public class ShopApp {
         System.out.println("Refund e-wallet berhasil? " + checkout.refund(wallet, ebook.getFinalPrice()));
         System.out.println("Saldo setelah refund: Rp" + wallet.getBalance());
 
-        Address address = new Address("Jl. Moh Hatta No. 10", "Padang", "25121");
+        Address address = new Address("Jl. Limau Manis No. 10", "Padang", "10101");
         Order order = new Order("ORD-0001", address);
         order.addLine(coffee, 2);
         order.addLine(ebook, 1);
 
         Order.Receipt receipt = order.new Receipt();
         System.out.println(receipt.toText());
+        
         PaymentMethod voucher = new PaymentMethod() { 
         private long remaining = 50_000;
 
